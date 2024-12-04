@@ -137,7 +137,57 @@ MMMXMSMMMSMMAMAAXXAAAMSMSMSMMSMSAMAMMMXAXAXMXSAMXSSMMMSMMSXMAMXMASMMMAMAMMMMMAMA
 SAAXSXAXAAAAXMMMAMSSMMAAAMAAMXAMXSAMXXSAMXSAAXXXMAXXAXAXAXAAXMAMAMAAMAMMMSAMMXSSMMXMMAMAAAMSMAMXAMMXXXXMMAMAAXXMMSSMMSMMMAMXMSAXAAMMMMMMXAAM
 SMASXSMMSSSMSXSMSMXAXSMSMSSSMMXMASASMASAMAXMASMMSMMSSSMMSSXMASAMASXMSSSMAMSASMMAAMMSSSSXMAMAMMMSAMAMMMMAMAMMMASAMAXAAAAAMMMSXMASMSMMASAMSMSS
 SAMXXXXAAMAMMAXAXMASMXXAAMXMASXMXSAMMAMAMMSAMSAASAAAXAXAMSASASASMSAAAAAMXSMMMASMMSAAMXMXXSSMSAASAMSXMASASASAXMASMMSMMSSMSXXSAMXXXAXSASAMMAAM
-SSXMASMMSSMMMAMMMASAMXSMSMASAMAXAMAMMSSXMXXXMSXMSMMXSAMSSSXMMSAMXSMMMSMMSMMXAXXXSMMXSAXSAMXXMMXSSMASMXSMSMSASMXXMXXXAXMASAXSXMSASAMMXSXMMMMS`
+SSXMASMMSSMMMAMMMASAMXSMSMASAMAXAMAMMSSXMXXXMSXMSMMXSAMSSSXMMSAMXSMMMSMMSMMXAXXXSMMXSAXSAMXXMMXSSMASMXSMSMSASMXXMXXXAXMASAXSXMSASAMMXSXMMMMS`;
 
-const matrix = input.split(`\n`)
-console.log(matrix)
+const matrix = input.split(`\n`).map((row) => row.split(``));
+let counter = 0;
+const isItXmasYet = (startRow, startCol, letter, rowDirection, colDirection, tracker) => {
+  if (letter == "S") {
+    counter++;
+    console.log("found an XMAS", counter);
+    return;
+  }
+
+  const key = "XMAS";
+  const nextLetter = key[key.indexOf(letter) + 1];
+
+  if (startRow + rowDirection < 0 || startRow + rowDirection >= matrix.length) {
+    return;
+  }
+
+  if (
+    startCol + colDirection < 0 ||
+    startCol + colDirection >= matrix[startRow + rowDirection].length
+  ) {
+    return;
+  }
+
+  if (matrix[startRow + rowDirection][startCol + colDirection] == nextLetter) {
+    tracker += nextLetter;
+    isItXmasYet(
+      startRow + rowDirection,
+      startCol + colDirection,
+      nextLetter,
+      rowDirection,
+      colDirection,
+      tracker
+    );
+  }
+};
+
+matrix.forEach((e, row) => {
+  for (let col = 0; col < e.length; col++) {
+    if (e[col] == "X") {
+      isItXmasYet(row, col, "X", 0, 1, "X");
+      isItXmasYet(row, col, "X", 1, 1, "X");
+      isItXmasYet(row, col, "X", 1, 0, "X");
+      isItXmasYet(row, col, "X", 1, -1, "X");
+      isItXmasYet(row, col, "X", 0, -1, "X");
+      isItXmasYet(row, col, "X", -1, -1, "X");
+      isItXmasYet(row, col, "X", -1, 0, "X");
+      isItXmasYet(row, col, "X", -1, 1, "X");
+    }
+  }
+});
+
+console.log(counter);
